@@ -76,6 +76,8 @@
 <script lang="ts">
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+
 import { defineComponent } from '@vue/composition-api';
 
 export default defineComponent({
@@ -104,21 +106,32 @@ export default defineComponent({
   methods: {
     getLocation() {
       this.$q.loading.show();
-      navigator.geolocation.getCurrentPosition((position) => {
-        this.lat = position.coords.latitude;
-        this.lon = position.coords.longitude;
-        this.getWeatherByCoords();
-      });
+
+      if (this.$q.platform.is.electron) {
+        void this.$axios.get('https://freegeoip.app/json/').then((response) => {
+          this.lat = response.data.latitude;
+          this.lon = response.data.longitude;
+          this.getWeatherByCoords();
+        });
+      } else {
+        navigator.geolocation.getCurrentPosition((position) => {
+          this.lat = position.coords.latitude;
+          this.lon = position.coords.longitude;
+          this.getWeatherByCoords();
+        });
+      }
     },
     getWeatherByCoords() {
       this.$q.loading.show();
-      void this.$axios(
-        `${this.apiUrl}?lat=${this.lat}&lon=${this.lon}&appid=${this.apiKey}&units=metric`
-      ).then((response) => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        this.weatherData = response.data;
-        this.$q.loading.hide();
-      });
+      void this.$axios
+        .get(
+          `${this.apiUrl}?lat=${this.lat}&lon=${this.lon}&appid=${this.apiKey}&units=metric`
+        )
+        .then((response) => {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+          this.weatherData = response.data;
+          this.$q.loading.hide();
+        });
     },
     getWeatherBySearch() {
       this.$q.loading.show();
