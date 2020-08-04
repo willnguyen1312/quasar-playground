@@ -3,6 +3,7 @@
     <div class="col q-pt-lg q-mx-md">
       <q-input
         v-model="search"
+        @keyup.enter="getWeatherBySearch"
         dark
         placeholder="Search"
         borderless
@@ -21,6 +22,7 @@
             round
             dense
             flat
+            @click="getWeatherBySearch"
             icon="search"
           ></q-btn>
         </template>
@@ -94,6 +96,14 @@ export default defineComponent({
     getWeatherByCoords() {
       void this.$axios(
         `${this.apiUrl}?lat=${this.lat}&lon=${this.lon}&appid=${this.apiKey}&units=metric`
+      ).then((response) => {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        this.weatherData = response.data;
+      });
+    },
+    getWeatherBySearch() {
+      void this.$axios(
+        `${this.apiUrl}?q=${this.search}&appid=${this.apiKey}&units=metric`
       ).then((response) => {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         this.weatherData = response.data;
