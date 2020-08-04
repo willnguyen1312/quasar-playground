@@ -1,5 +1,8 @@
 <template>
-  <q-page class="flex column">
+  <q-page
+    class="flex column"
+    :class="bgClass"
+  >
     <div class="col q-pt-lg q-mx-md">
       <q-input
         v-model="search"
@@ -71,6 +74,8 @@
 </template>
 
 <script lang="ts">
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { defineComponent } from '@vue/composition-api';
 
 export default defineComponent({
@@ -84,6 +89,17 @@ export default defineComponent({
       apiUrl: 'https://api.openweathermap.org/data/2.5/weather',
       apiKey: '25886a546a323c37922608e937d1bd6d',
     };
+  },
+  computed: {
+    bgClass() {
+      if (this.weatherData) {
+        if ((this.weatherData as any).weather[0].icon.endsWith('n')) {
+          return 'bg-night';
+        } else {
+          return 'bg-day';
+        }
+      }
+    },
   },
   methods: {
     getLocation() {
@@ -116,6 +132,14 @@ export default defineComponent({
 <style lang="scss">
 .q-page {
   background: linear-gradient(to bottom, #136a8a, #267871);
+
+  &.bg-night {
+    background: linear-gradient(to bottom, #232526, #414345);
+  }
+
+  &.bg-day {
+    background: linear-gradient(to bottom, #00b4db, #0083b0);
+  }
 }
 
 .degree {
