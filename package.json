@@ -8,7 +8,8 @@
   "scripts": {
     "lint": "eslint --ext .js,.ts,.vue ./",
     "test": "echo \"No test specified\" && exit 0",
-    "icons": "icongenie generate -i app-icon.png --theme-color 136a8a --skip-trim"
+    "icons": "icongenie generate -i app-icon.png --theme-color 136a8a --skip-trim",
+    "build": "quasar build web"
   },
   "dependencies": {
     "@quasar/extras": "^1.0.0",
