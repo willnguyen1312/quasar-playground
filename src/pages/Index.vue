@@ -103,6 +103,7 @@ export default defineComponent({
   },
   methods: {
     getLocation() {
+      this.$q.loading.show();
       navigator.geolocation.getCurrentPosition((position) => {
         this.lat = position.coords.latitude;
         this.lon = position.coords.longitude;
@@ -110,19 +111,23 @@ export default defineComponent({
       });
     },
     getWeatherByCoords() {
+      this.$q.loading.show();
       void this.$axios(
         `${this.apiUrl}?lat=${this.lat}&lon=${this.lon}&appid=${this.apiKey}&units=metric`
       ).then((response) => {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         this.weatherData = response.data;
+        this.$q.loading.hide();
       });
     },
     getWeatherBySearch() {
+      this.$q.loading.show();
       void this.$axios(
         `${this.apiUrl}?q=${this.search}&appid=${this.apiKey}&units=metric`
       ).then((response) => {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         this.weatherData = response.data;
+        this.$q.loading.hide();
       });
     },
   },
